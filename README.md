@@ -70,3 +70,8 @@ Areas that are part of the image are marked in blue, already separated lights in
 * Distance - distance between separated light an center. Use this parameter for setting position of light in 3d space. Size will changed automaticaly for save size as in hdr map.
 * Use Texture - avalable only for Rectangle light type.
 * Bake Light texture - Bake texture only for this highlight.
+
+# Known issues and limitations that I plan to improve later.
+* Text fields respond to mouse wheel when parameter not selected.
+* When clicking on a text field, the value is not selected as in Houdini text fields.
+* When you press enter key, while editing the value, it dive inside the lighter node.
