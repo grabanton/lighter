@@ -9,7 +9,7 @@ Lighter is a Houdini package for fast and flexible HDRI based lighting.
 4. Convert any highligt to separated light.
 
 
-# Instalation
+# Installation
 Clone this repository, and add path to it in houdini.env file.
 
 `HOUDINI_PATH = "path/to/cloned/lighter;&"`
