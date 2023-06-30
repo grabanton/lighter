@@ -4,7 +4,7 @@ Lighter is a Houdini package for fast and flexible HDRI based lighting.
 
 # Main features:
 1. Change color and brightness of hdr map highlights.
-2. Fill highlits with background.
+2. Fill highlights with background.
 3. Align image orientation.
 4. Convert any highligt to separated light.
 
