@@ -36,7 +36,7 @@ Areas that are part of the image are marked in blue, already separated lights in
 * Threshold - threshold for converting highlights into a two-tone image for the trace. Pixels smaller than this value will be black.
 
 # Lights settings
-* Master Intensity - intensity for environment light all separated lights.
+* Master Intensity - intensity for environment light and all separated lights.
 
 # Environment light
 ![image](images/envlight_settings.png)
