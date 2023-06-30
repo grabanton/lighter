@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pythonPanelDocument>
+  <!-- This file contains definitions of Python interfaces and the
+ interfaces menu.  It should not be hand-edited when it is being
+ used by the application.  Note, that two definitions of the
+ same interface or of the interfaces menu are not allowed
+ in a single file. -->
+  <interface name="lighter" label="Lighter" icon="MISC_python" showNetworkNavigationBar="false" help_url="">
+    <script><![CDATA[import lighter
+
+def onCreateInterface():
+    global thePanel
+    thePanel = lighter.LighterPanel()
+    return thePanel
+
+def onActivateInterface():
+    global thePanel
+    thePanel.onActivate(kwargs)
+
+def onDeactivateInterface():
+    global thePanel
+    thePanel.onDeactivate()
+
+def onDestroyInterface():
+    global thePanel
+    thePanel.onDestroy()
+    thePanel = None
+
+def onNodePathChanged(node):
+    global thePanel
+    thePanel.onNodePathChanged(node)   ]]></script>
+    <includeInToolbarMenu menu_position="105" create_separator="false"/>
+    <showInParametersPane optype="agr::Lop/lighter::1.0"/>
+    <help><![CDATA[]]></help>
+  </interface>
+</pythonPanelDocument>

@@ -1,0 +1,18 @@
+
+import hou, threading, time, math
+
+def move(node):
+    pos = node.position()
+    for i in range(180) :
+        t = pow(float(i)/180,2)
+        amp = pow(math.sin(t*3.1428),0.5)*0.1
+        off = hou.Vector2(math.cos(t*200)*amp, math.sin(t*200)*amp)
+        m = 1 + t*10
+        clr = hou.Color(0.1*m,0.02*m,0)
+        node.setPosition(pos+off)
+        node.setColor(clr)
+        time.sleep(1.0/48)
+        
+kwargs["node"].setUserData('nodeshape', 'star')
+thread = threading.Thread(target=move, args=(kwargs["node"],))
+thread.start()

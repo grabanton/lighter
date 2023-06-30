@@ -1,0 +1,459 @@
+# Dialog script for agr::lighter::1.0 automatically generated
+
+{
+    name	agr::lighter::1.0
+    script	agr::lighter::1.0
+    label	Lighter
+
+    help {
+	""
+    }
+
+    inputlabel	1	"Input Stage"
+    inputlabel	2	"Input 2"
+    inputlabel	3	"Input 3"
+    inputlabel	4	"Input 4"
+
+    parm {
+        name    "primpath"
+        label   "Root Primitive Path"
+        type    string
+        joinnext
+        default { "/Shot/Lights/$OS" }
+        menureplace {
+            [ "opmenu -l -a envlight primpath" ]
+        }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_action" "import loputils\nloputils.selectPrimsInParm(kwargs, False)" }
+        parmtag { "script_action_help" "Select a primitive in the Scene Viewer or Scene Graph Tree pane.\nCtrl-click to select using the primitive picker dialog.\nAlt-click to toggle movement of the display flag." }
+        parmtag { "script_action_icon" "BUTTONS_reselect" }
+        parmtag { "sidefx::usdpathtype" "prim" }
+    }
+    parm {
+        name    "extract"
+        label   "Extract Lights"
+        type    button
+        default { "0" }
+        parmtag { "script_callback" "hou.phm().extract()" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "texpath"
+        label   "Input HDR Map"
+        type    image
+        default { "opdef:/agr::Lop/lighter::1.0?peppermint_powerplant_acescg.exr" }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "export_disable" "1" }
+        parmtag { "filechooser_mode" "read" }
+        parmtag { "script_callback" "" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "savepath"
+        label   "Output HDR Map"
+        type    image
+        joinnext
+        default { "$HIP/tex/lighter/$VER/envlight_acescg.rat" }
+        parmtag { "script_callback" "" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "bake"
+        label   "Bake All Textures"
+        type    button
+        default { "0" }
+        parmtag { "script_callback" "hou.phm().bake_all()" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "envres"
+        label   "Output Map Resolution"
+        type    ordinal
+        default { "0" }
+        menu {
+            "0" "Same as Input"
+            "1" "1024"
+            "2" "2048"
+            "3" "4096"
+        }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "lightres"
+        label   "Light Bake Res"
+        type    integer
+        default { "256" }
+        menu usetokenvalue {
+            "64"    "64"
+            "128"   "128"
+            "256"   "256"
+            "512"   "512"
+        }
+        range   { 0 10 }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "blurtex"
+        label   "Light Bake Blur"
+        type    float
+        default { "3" }
+        range   { 0! 100 }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback" "" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "img_res"
+        label   "Image Resolution"
+        type    vector2
+        size    2
+        default { [ "res = [hou.imageResolution(ch(\"texpath\"))[0], 1024, 2048, 4096]\nreturn res[hou.parm(\"envres\").eval()]" python ] [ "res = [hou.imageResolution(ch(\"texpath\"))[1], 512, 1024, 2048]\nreturn res[hou.parm(\"envres\").eval()]" python ] }
+        range   { -1 1 }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "light_index"
+        label   "Light Index"
+        type    integer
+        invisible
+        default { "0" }
+        range   { 0 10 }
+        parmtag { "script_callback_language" "python" }
+    }
+    groupcollapsible {
+        name    "folder0"
+        label   "Highlight Detection"
+
+        parm {
+            name    "detectres"
+            label   "Detect Map Res"
+            type    integer
+            default { "512" }
+            menu usetokenvalue {
+                "512"   "512"
+                "1024"  "1024"
+                "2048"  "2048"
+            }
+            range   { 0 10 }
+            parmtag { "script_callback_language" "python" }
+        }
+        parm {
+            name    "clip"
+            label   "Clip Lights"
+            type    float
+            default { "1" }
+            range   { 1 10 }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "export_disable" "1" }
+            parmtag { "parmvop" "1" }
+            parmtag { "script_callback" "" }
+            parmtag { "script_callback_language" "python" }
+            parmtag { "shaderparmcontexts" "cop2" }
+        }
+        parm {
+            name    "blursize"
+            label   "Blur"
+            type    float
+            default { "3" }
+            range   { 0! 100 }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "export_disable" "1" }
+            parmtag { "script_callback" "" }
+            parmtag { "script_callback_language" "python" }
+        }
+        parm {
+            name    "size"
+            label   "Dilate/Erode"
+            type    integer
+            default { "2" }
+            range   { -10 10 }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "export_disable" "1" }
+            parmtag { "script_callback" "" }
+            parmtag { "script_callback_language" "python" }
+        }
+        parm {
+            name    "threshold"
+            label   "Threshold"
+            type    float
+            default { "0.5" }
+            range   { 0.001! 1! }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "export_disable" "1" }
+            parmtag { "parmvop" "1" }
+            parmtag { "script_callback" "" }
+            parmtag { "script_callback_language" "python" }
+            parmtag { "shaderparmcontexts" "cop2" }
+        }
+        parm {
+            name    "rot"
+            label   "Rotate Map"
+            type    vector
+            size    3
+            default { "0" "0" "0" }
+            range   { 0 10 }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "export_disable" "1" }
+            parmtag { "parmvop" "1" }
+            parmtag { "script_callback" "" }
+            parmtag { "script_callback_language" "python" }
+            parmtag { "shaderparmcontexts" "cop2" }
+        }
+    }
+
+    parm {
+        name    "intensity"
+        label   "Intensity"
+        type    float
+        default { "1" }
+        range   { 0 10 }
+        parmtag { "script_callback_language" "python" }
+    }
+    groupsimple {
+        name    "folder2"
+        label   "Environment Light"
+
+        parm {
+            name    "use_env"
+            label   "Enable"
+            type    toggle
+            default { "1" }
+            range   { 0! 10 }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "script_callback_language" "python" }
+        }
+        parm {
+            name    "env_clr"
+            label   "Color"
+            type    color
+            size    3
+            default { "1" "1" "1" }
+            disablewhen "{ use_env == 0 }"
+            range   { 0 1 }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "colortype" "val" }
+            parmtag { "usdvaluetype" "color3f" }
+        }
+        parm {
+            name    "env_exposure"
+            label   "Exposure"
+            type    float
+            default { "0" }
+            disablewhen "{ use_env == 0 }"
+            range   { -10 10 }
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "usdvaluetype" "float" }
+        }
+        parm {
+            name    "env_name"
+            label   "Name"
+            type    string
+            joinnext
+            default { "envlight" }
+            disablewhen "{ use_env == 0 }"
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "spare_category" "Light" }
+            parmtag { "uiscope" "None" }
+            parmtag { "usdapischema" "KarmaLightSettingsAPI" }
+            parmtag { "usdvaluetype" "string" }
+        }
+        parm {
+            name    "env_lpe"
+            label   "        LPE Tag"
+            type    string
+            default { "multilight1" }
+            disablewhen "{ use_env == 0 }"
+            parmtag { "autoscope" "0000000000000000" }
+            parmtag { "spare_category" "Light" }
+            parmtag { "uiscope" "None" }
+            parmtag { "usdapischema" "KarmaLightSettingsAPI" }
+            parmtag { "usdvaluetype" "string" }
+        }
+        parm {
+            name    "baked_env"
+            label   "Baked"
+            type    integer
+            invisible
+            default { [ "node = hou.pwd()\nreturn node.hm().checkEnv()" python ] }
+            range   { 0! 1! }
+            parmtag { "script_callback_language" "python" }
+        }
+        parm {
+            name    "baked_lights"
+            label   "Baked"
+            type    integer
+            invisible
+            default { [ "node = hou.pwd()\nreturn node.hm().checkGeneral()" python ] }
+            range   { 0! 1! }
+            parmtag { "script_callback_language" "python" }
+        }
+        parm {
+            name    "labelparm"
+            label   "        "
+            type    label
+            joinnext
+            default { "" }
+        }
+        parm {
+            name    "bake_env"
+            label   "Bake Texture"
+            type    button
+            default { "0" }
+            disablewhen "{ use_env == 0 }"
+            parmtag { "script_callback" "hou.phm().bake_env()" }
+            parmtag { "script_callback_language" "python" }
+        }
+    }
+
+    parm {
+        name    "sepparm"
+        label   "Spacer"
+        type    separator
+        default { "" }
+        parmtag { "sidefx::layout_height" "large" }
+        parmtag { "sidefx::look" "blank" }
+    }
+    groupsimple {
+        name    "folder1"
+        label   "Folder Name"
+
+        multiswitcher {
+            name    "lights"
+            label    "Lights"
+
+            parm {
+                name    "separate#"
+                label   "Separate Light"
+                type    toggle
+                joinnext
+                default { "0" }
+                parmtag { "script_callback" "" }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "renderable#"
+                label   "Renderable"
+                type    toggle
+                joinnext
+                default { "0" }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "fill#"
+                label   "Fill Background"
+                type    toggle
+                default { "0" }
+                parmtag { "script_callback" "" }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "clr#"
+                label   "Color"
+                type    color
+                size    3
+                default { "1" "1" "1" }
+                range   { 0 1 }
+                parmtag { "colortype" "val" }
+                parmtag { "script_callback" "" }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "exposure#"
+                label   "Exposure"
+                type    float
+                default { "0" }
+                range   { -15 15 }
+                parmtag { "script_callback" "" }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "name#"
+                label   "Name"
+                type    string
+                joinnext
+                default { "light_#" }
+                disablewhen "{ separate# == 0 }"
+                range   { 0 10 }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "lpe#"
+                label   "       LPE Tag"
+                type    string
+                default { "multilight2" }
+                disablewhen "{ separate# == 0 }"
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "lighttype#"
+                label   "Light Type"
+                type    ordinal
+                joinnext
+                default { "4" }
+                menu {
+                    "0" "Distant"
+                    "1" "Point"
+                    "2" "Sphere"
+                    "3" "Disc"
+                    "4" "Rectangle"
+                }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "dist_angle#"
+                label   "Distant Angle"
+                type    float
+                default { "0.5" }
+                disablewhen "{ separate# == 0 } { lighttype# != 0 }"
+                range   { 0 10 }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "dist#"
+                label   "Distance"
+                type    float
+                default { "1" }
+                disablewhen "{ separate# == 0 } { distant# == 1 }"
+                range   { 0 10 }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "use_tex#"
+                label   "Use Texture                "
+                type    toggle
+                joinnext
+                default { "0" }
+                disablewhen "{ separate# == 0 } { distant# == 1 }"
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "baked#"
+                label   "Baked"
+                type    integer
+                invisible
+                joinnext
+                default { [ "ch(\"baked_lights\")" hscript-expr ] }
+                range   { 0! 1! }
+                parmtag { "script_callback_language" "python" }
+            }
+            parm {
+                name    "labelparm2_#"
+                label   "        "
+                type    label
+                joinnext
+                default { "" }
+            }
+            parm {
+                name    "bake#"
+                label   "Bake Texture"
+                type    button
+                default { "0" }
+                disablewhen "{ separate# == 0 } { use_tex# == 0 } { distant# == 1 }"
+                parmtag { "script_callback" "hou.phm().bake_light(kwargs)" }
+                parmtag { "script_callback_language" "python" }
+            }
+        }
+
+    }
+
+}

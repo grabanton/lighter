@@ -1,0 +1,245 @@
+import re, os
+from pxr import UsdGeom, Gf
+
+GENERAL = [ "texpath", 
+            "savepath",
+            "envres",
+            "lightres", 
+            "blurtex", 
+            "detectres", 
+            "clip", 
+            "blursize",
+            "size",
+            "threshold",
+            "rotx",
+            "roty",
+            "rotz"]
+                 
+DYNAMIC = [ "separate#",
+            "fill#",
+            "clr#r",
+            "clr#g",
+            "clr#b",
+            "exposure#"]
+            
+def saveData() :
+    node = hou.pwd()   
+    for name in GENERAL :
+        val = node.parm(name).eval()
+        node.setUserData(name,str(val))
+        
+    for i in range(node.parm("lights").eval()) :
+        for key in DYNAMIC :
+            name = key.replace("#",str(i+1))
+            val = node.parm(name).eval()
+            node.setUserData(name,str(val))
+            
+def stopRender() :
+    view = hou.ui.paneTabOfType(hou.paneTabType.SceneViewer)
+    if view != None :
+        view.setHydraRenderer("Houdini GL")
+            
+def checkGeneral() :
+    node = hou.pwd()
+    check = []
+    for name in GENERAL :
+        check.append(str(node.parm(name).eval()) == node.userDataDict().get(name))
+    return 1 if all(check) else 0
+        
+def checkEnv() :
+    node = hou.pwd()
+    check = []
+    if checkGeneral() :
+        res = node.parm("envres").eval()
+        if not str(res) == node.userDataDict().get("envres") :
+            return 0
+        for i in range(node.parm("lights").eval()) :
+            fil = node.parm(f"fill{i+1}").eval()
+            if not str(fil) == node.userDataDict().get(f"fill{i+1}") :
+                check.append(False)
+                break
+                
+            sep = node.parm(f"separate{i+1}").eval()
+            if not str(sep) == node.userDataDict().get(f"separate{i+1}") :
+                check.append(False)
+                break
+                
+            if not sep and not fil :
+                clrr = node.parm(f"clr{i+1}r").eval()
+                clrg = node.parm(f"clr{i+1}g").eval()
+                clrb = node.parm(f"clr{i+1}b").eval()
+                exposure = node.parm(f"exposure{i+1}").eval()
+                check.append(str(clrr) == node.userDataDict().get(f"clr{i+1}r"))
+                check.append(str(clrg) == node.userDataDict().get(f"clr{i+1}g"))
+                check.append(str(clrb) == node.userDataDict().get(f"clr{i+1}b"))
+                check.append(str(exposure) == node.userDataDict().get(f"exposure{i+1}"))
+                if not all(check) :
+                    break
+        return 1 if all(check) else 0
+    else :
+        return 0
+
+def refresh() :
+    hou.hscript("glcache -c")
+    hou.hscript("texcache -c")
+    
+def cleanup() :
+    node = hou.pwd()
+    path, name = os.path.split(node.parm("savepath").eval())
+    if os.path.exists(path) :
+        files = os.listdir(path)
+        for file in files :
+            filepath = f"{path}/{file}"
+            if os.path.isfile(filepath) :
+                os.remove(filepath)
+    
+def manualMode() :
+    mode = hou.updateModeSetting()
+    hou.setUpdateMode(hou.updateMode.Manual)
+    return mode
+    
+def set_version() :
+    node = hou.pwd()
+    path = node.parm("savepath").rawValue()
+    ver = hou.text.expandString("$VER")
+    new_path = re.sub("\$VER|v[0-9]+", ver, path)
+    node.parm("savepath").set(new_path)
+    
+def bake_env(update_path=True, save_data=True, clear=True) :
+    mode = manualMode()
+    if clear :
+        stopRender()
+    node = hou.pwd()
+    if update_path :
+        set_version()
+    if save_data :
+        saveData()
+    node.node("comp/bake_env").render()
+    if clear :
+        refresh()
+        hou.setUpdateMode(mode)
+    
+def bake_light(kwargs, update_path=True, save_data=True, clear=True) :
+    mode = manualMode()
+    if clear :
+        stopRender()
+    node = hou.pwd()
+    if update_path :
+        set_version()
+    if save_data :
+        saveData()
+    idx = int(kwargs["script_multiparm_index"])
+    node.parm("light_index").set(idx-1)
+    node.node("comp/bake_light").render()
+    if clear :
+        refresh()
+        hou.setUpdateMode(mode)
+    
+def bake_all() :
+    stopRender()
+    mode = manualMode()
+    node = hou.pwd()
+    bake_env(True, True, False)
+    count = node.parm("lights").eval()
+    for i in range(count) :
+        kwargs = {"script_multiparm_index" : i+1}
+        bake_light(kwargs, False, False, False)
+    refresh()
+    hou.setUpdateMode(mode)
+    
+def extract() :
+    types = { "0" : 1,
+              "1" : 3,
+              "2" : 5,
+              "3" : 2,
+              "4" : 4 }
+    node = hou.pwd()
+    input_node = node.input(0)
+    stage = node.node("build_lights").stage()
+    primpath = node.parm("primpath").eval()
+    intensity = node.parm("intensity").eval()
+    out_map = node.parm("savepath").rawValue()
+    
+    primdef = input_node.createOutputNode("primitive")
+    primdef.parm("primpath").set(primpath)
+    
+    xform = primdef.createOutputNode("xform")
+    xform.parm("primpattern").set(primpath)
+    last_node = xform
+    
+    if node.parm("use_env").eval() :
+        texture = node.parm("savepath").eval()
+        color = node.parmTuple("env_clr").eval()
+        exposure = node.parm("env_exposure").eval()
+        name = node.parm("env_name").eval()
+        lpe = node.parm("env_lpe").eval()
+        env = last_node.createOutputNode("domelight",node_name=name)
+        env.parm("primpath").set(f"{primpath}/$OS")
+        env.parm("xn__inputsintensity_i0a").set(intensity)
+        env.parm("xn__inputsexposure_vya").set(exposure)
+        env.parmTuple("xn__inputscolor_zta").set(color)
+        try :
+            env.parm("xn__karmalightlpetag_control_4fbf").set("set")
+            env.parm("xn__karmalightlpetag_31af").set(lpe)
+        except AttributeError :
+            print(f"{env.name()} dont have karma parameters. Lpe tag not created.")
+        env.parm("xn__inputstexturefile_r3ah").set(texture)
+        env.setDisplayFlag(1)
+        last_node = env
+        
+    for i in range(node.parm("lights").eval()) :
+        num = i+1
+        sep = node.parm(f"separate{num}").eval()
+        if sep :
+            name = node.parm(f"name{num}").eval()
+            usd_light = stage.GetPrimAtPath(f"{primpath}/{name}")
+            renderable = node.parm(f"renderable{num}").eval()
+            color = usd_light.GetAttribute("inputs:color").Get()
+            exposure = node.parm(f"exposure{num}").eval()
+            lpe = node.parm(f"lpe{num}").eval()
+            ltype = node.parm(f"lighttype{num}").evalAsString()
+            
+            light = last_node.createOutputNode("light",node_name=name)
+            light.parm("primpath").set(f"{primpath}/$OS")
+            light.parm("lighttype").set(types[ltype])
+            light.parm("xn__inputsintensity_i0a").set(intensity)
+            light.parm("xn__inputsexposure_vya").set(exposure)
+            light.parmTuple("xn__inputscolor_zta").set(color)
+            try :
+                light.parm("xn__karmalightlpetag_control_4fbf").set("set")
+                light.parm("xn__karmalightlpetag_31af").set(lpe)
+            except AttributeError :
+                print(f"{light.name()} dont have karma parameters. Lpe tag not created.")
+            
+            xformable = UsdGeom.Xformable(usd_light)
+            xform = hou.Matrix4(xformable.GetLocalTransformation())
+            transform = xform.explode()
+            light.parmTuple("t").set(transform["translate"])
+            light.parmTuple("r").set(transform["rotate"])
+            light.parm("scale").set(transform["scale"][0])
+            light.setDisplayFlag(1)
+            
+            last_node = light
+            
+            if ltype == "0" :
+                angle = node.parm(f"dist_angle{num}").eval()
+                light.parm("xn__inputsangle_zta").set(angle)
+                light.parm("xn__inputsnormalize_i0a").set(1)
+            elif ltype == "2" or ltype == "3" :
+                rad = usd_light.GetAttribute("inputs:radius").Get()
+                light.parm("xn__inputsradius_mva").set(rad)
+            elif ltype == "4" :
+                width = usd_light.GetAttribute("inputs:width").Get()
+                height = usd_light.GetAttribute("inputs:height").Get()
+                light.parm("xn__inputswidth_zta").set(width)
+                light.parm("xn__inputsheight_mva").set(height)
+                if node.parm(f"use_tex{num}").eval() :
+                    texpath = usd_light.GetAttribute("inputs:texture:file").Get()
+                    light.parm("xn__inputstexturefile_r3ah").set(texpath.path)
+            
+            if renderable :
+                try :
+                    light.parm("xn__karmalightrenderlightgeo_control_5sbf").set("set")
+                    light.parm("xn__karmalightrenderlightgeo_4fbf").set(1)
+                except AttributeError :
+                    pass
