@@ -8,6 +8,11 @@ Lighter is a Houdini package for fast and flexible HDRI based lighting.
 3. Align image orientation.
 4. Convert any highligt to separated light.
 
+
+# Instalation
+Clone this repository, and add path to it in houdini.env file.
+HOUDINI_PATH = "path to cloned repo/lighter;&"
+
 # Image viewer
 ![image](images/map_context_menu.png)![image](images/light_context_menu.png)
 
