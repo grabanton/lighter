@@ -10,7 +10,7 @@ Lighter is a Houdini package for fast and flexible HDRI based lighting.
 
 
 # Instalation
-Clone this repository, and add path to it in houdini.env file.
+Clone this repository, and add path to it in houdini.env file.\n
 HOUDINI_PATH = "path to cloned repo/lighter;&"
 
 # Image viewer
