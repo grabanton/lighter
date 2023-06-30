@@ -75,3 +75,4 @@ Areas that are part of the image are marked in blue, already separated lights in
 * Text fields respond to mouse wheel when parameter not selected.
 * When clicking on a text field, the value is not selected as in Houdini text fields.
 * When you press enter key, while editing the value, it dive inside the lighter node.
+* Light shapes multiselection not supported
