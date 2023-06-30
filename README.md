@@ -34,6 +34,7 @@ Areas that are part of the image are marked in blue, already separated lights in
 * Blur - blur analisis map if you want to average details.
 * Dilate/Erode - expands and then narrows highlights. This parameter is needed to glue a lot of small spots.
 * Threshold - threshold for converting highlights into a two-tone image for the trace. Pixels smaller than this value will be black.
+* Rotate map - rotate hdr in polar space.
 
 # Lights settings
 * Master Intensity - intensity for environment light and all separated lights.
