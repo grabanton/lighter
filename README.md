@@ -1,5 +1,5 @@
 # Lighter
-![image](images/cover.png)
+[![Demo Video](images/cover_video.png)](https://vimeo.com/849685714)
 Lighter is a Houdini package for fast and flexible HDRI based lighting.
 
 # Main features:
