@@ -26,7 +26,8 @@ Areas that are part of the image are marked in blue, already separated lights in
 
 * Primpath - root xform primitive for new lights.
 * Extract Lights - Convert lighter to set of native houdini lights.
-* Input HDR Map - Output HDR Map - path for baked environment map. Textures for individual lights will save near the environment.
+* Input HDR Map - input texture
+* Output HDR Map - path for baked environment map. Textures for individual lights will save near the environment.
 * Bake All Textures - bake textures for environment map and all potentially detachable lights.
 * Output HDR Res - resolution of output environment map. (Same as input, 1024x512, 2048x1024, 4096x2048)
 * Light Bake Res - texture resolution for individual lights. (64x64, 128x128, 256x256, 512x512)
