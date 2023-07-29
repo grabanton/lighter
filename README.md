@@ -1,4 +1,5 @@
 [![Demo Video](images/cover_video.png)](https://vimeo.com/849685714)
+Watch the video on vimeo ↑
 
 # Main features:
 1. Change color and brightness of hdr map highlights.
