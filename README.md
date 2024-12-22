@@ -1,6 +1,11 @@
 [![Demo Video](images/cover_video.png)](https://vimeo.com/849685714)
 Watch the video on vimeo ↑
 
+> [!info]
+> Updates: 
+>   1. asset was updated to use copernicus.
+>   2. removed clear of GL and texture cach (in new houdini it cause crash in almost 100%)
+
 # Main features:
 1. Change color and brightness of hdr map highlights.
 2. Fill highlights with background.

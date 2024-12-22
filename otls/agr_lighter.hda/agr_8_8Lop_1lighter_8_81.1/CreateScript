@@ -1,0 +1,52 @@
+# Automatically generated script
+\set noalias = 1
+#
+#  Creation script for agr::lighter::1.1 operator
+#
+
+if ( "$arg1" == "" ) then
+    echo This script is intended as a creation script
+    exit
+endif
+
+# Node $arg1 (agr::Lop/lighter::1.1)
+opexprlanguage -s python $arg1
+opuserdata -n '___Version___' -v '' $arg1
+opuserdata -n 'blursize' -v '11.83' $arg1
+opuserdata -n 'blurtex' -v '3.0' $arg1
+opuserdata -n 'clip' -v '1.0' $arg1
+opuserdata -n 'clr1b' -v '1.0' $arg1
+opuserdata -n 'clr1g' -v '1.0' $arg1
+opuserdata -n 'clr1r' -v '1.0' $arg1
+opuserdata -n 'clr2b' -v '1.0' $arg1
+opuserdata -n 'clr2g' -v '1.0' $arg1
+opuserdata -n 'clr2r' -v '1.0' $arg1
+opuserdata -n 'clr3b' -v '1.0' $arg1
+opuserdata -n 'clr3g' -v '1.0' $arg1
+opuserdata -n 'clr3r' -v '1.0' $arg1
+opuserdata -n 'clr4b' -v '1.0' $arg1
+opuserdata -n 'clr4g' -v '1.0' $arg1
+opuserdata -n 'clr4r' -v '1.0' $arg1
+opuserdata -n 'detectres' -v '512' $arg1
+opuserdata -n 'envres' -v '0' $arg1
+opuserdata -n 'exposure1' -v '-3.18' $arg1
+opuserdata -n 'exposure2' -v '0.0' $arg1
+opuserdata -n 'exposure3' -v '0.0' $arg1
+opuserdata -n 'exposure4' -v '0.0' $arg1
+opuserdata -n 'fill1' -v '0' $arg1
+opuserdata -n 'fill2' -v '1' $arg1
+opuserdata -n 'fill3' -v '0' $arg1
+opuserdata -n 'fill4' -v '0' $arg1
+opuserdata -n 'lightres' -v '256' $arg1
+opuserdata -n 'nodeshape' -v 'star' $arg1
+opuserdata -n 'rotx' -v '0.0' $arg1
+opuserdata -n 'roty' -v '0.0' $arg1
+opuserdata -n 'rotz' -v '0.0' $arg1
+opuserdata -n 'savepath' -v 'G:/cg/lighter_demo/tex/lighter/v001/envlight_acescg.rat' $arg1
+opuserdata -n 'separate1' -v '1' $arg1
+opuserdata -n 'separate2' -v '1' $arg1
+opuserdata -n 'separate3' -v '1' $arg1
+opuserdata -n 'separate4' -v '0' $arg1
+opuserdata -n 'size' -v '2' $arg1
+opuserdata -n 'texpath' -v 'opdef:/agr::Lop/lighter::1.0?peppermint_powerplant_acescg.exr' $arg1
+opuserdata -n 'threshold' -v '0.5' $arg1

@@ -30,7 +30,7 @@ def onNodePathChanged(node):
     global thePanel
     thePanel.onNodePathChanged(node)   ]]></script>
     <includeInToolbarMenu menu_position="105" create_separator="false"/>
-    <showInParametersPane optype="agr::Lop/lighter::1.0"/>
+    <showInParametersPane optype="agr::Lop/lighter::1.1"/>
     <help><![CDATA[]]></help>
   </interface>
 </pythonPanelDocument>
